@@ -5,8 +5,8 @@ metadata:
   name: matomo-kubernetes
   description: Matomo Kuberenetes Helm charts.
   annotations:
-    github.com/project-slug:  digitalist-se/matomo-kubernetes
-    backstage.io/techdocs-ref: url:https://github.com/digitalist-se/matomo-kubernetes
+    github.com/project-slug:  averni/matomo-kubernetes
+    backstage.io/techdocs-ref: url:https://github.com/averni/matomo-kubernetes
   tags:
     - matomo
     - kubernetes
