@@ -67,6 +67,9 @@ spec:
           runAsUser: {{.Values.matomo.runAsUser}}
           privileged: false
           allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
         imagePullPolicy: Always
         env:
         - name: MATOMO_DB_PASSWORD
@@ -79,10 +82,12 @@ spec:
           - name: static-data
             mountPath: /var/www/html
           - name: matomo-supervisor-tracker
-            mountPath: /etc/supervisor.d
+            mountPath: /etc/supervisor/conf.d
             readOnly: true
+      {{- if .Values.matomo.imagePullSecrets }}
       imagePullSecrets:
-      - name: matomo-registry-secret
+        {{ toYaml .Values.matomo.imagePullSecrets }}
+      {{- end }}
       volumes:
       - name: matomo-configuration
         configMap:

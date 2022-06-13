@@ -4,10 +4,7 @@ metadata:
   name: matomo-supervisor-queuedtrackingmonitor
   namespace: {{.Values.namespace}}
 data:
-  queuedtracking-monitor.ini: |
-    [unix_http_server]
-    file = /home/www-data/supervisord.sock
-
+  queuedtracking-monitor.conf: |
     [program:queuedtracking-monitor]
     startretries=100
     process_name=%(program_name)s_%(process_num)02d

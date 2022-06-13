@@ -85,15 +85,13 @@ spec:
         env:
         - name: PHP_FPM_FIX_PROCESS_COUNT
           value: "true"
+        {{- if .Values.matomo.fpmmetrics.resources }}
         resources:
-          limits:
-            cpu: 500m
-            memory: 256Mi
-          requests:
-            cpu: 40m
-            memory: 32Mi
+{{ toYaml .Values.matomo.fpmmetrics.resources | indent 10 }}
+        {{- end }}
       - name: nginx
         image: {{.Values.nginx.image}}
+        imagePullPolicy: {{.Values.nginx.imagePullPolicy}}
         {{- if .Values.nginx.resources }}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
@@ -104,11 +102,8 @@ spec:
         #     path: /index.php
         #     port: 8080
         livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - "[ -f /tmp/nginx.pid ] && ps -A | grep nginx"
+          tcpSocket:
+              port: http
           initialDelaySeconds: 10
           periodSeconds: 5
         securityContext:
@@ -140,9 +135,11 @@ spec:
             mountPath: /var/www/html
             readOnly: true
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
       - name: matomo
         image: {{.Values.matomo.image}}
+        imagePullPolicy: {{.Values.matomo.imagePullPolicy}}
         {{- if .Values.matomo.resources }}
         resources:
 {{ toYaml .Values.matomo.resources | indent 10 }}
@@ -203,8 +200,10 @@ spec:
           initialDelaySeconds: {{ .Values.matomo.livenessProbe.initialDelaySeconds | default 30 }}
           periodSeconds:  {{ .Values.matomo.livenessProbe.periodSeconds | default 30 }}
         {{- end }}
+      {{- if .Values.matomo.imagePullSecrets }}
       imagePullSecrets:
-      - name: matomo-registry-secret
+        {{ toYaml .Values.matomo.imagePullSecrets }}
+      {{- end }}
       volumes:
       - name: nginx-conf
         configMap:

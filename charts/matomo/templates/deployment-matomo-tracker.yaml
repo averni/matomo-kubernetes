@@ -63,14 +63,11 @@ spec:
           privileged: false
           allowPrivilegeEscalation: false
         image: hipages/php-fpm_exporter:2.2.0
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
+        {{- if .Values.matomo.fpmmetrics.resources }}
         resources:
-          limits:
-            cpu: 40m
-            memory: 32Mi
-          requests:
-            cpu: 40m
-            memory: 32Mi
+{{ toYaml .Values.matomo.fpmmetrics.resources | indent 10 }}
+        {{- end }}
       - name: nginx
         image: {{.Values.nginx.image}}
         {{- if .Values.matomo.tracker.nginx.resources }}
@@ -84,14 +81,14 @@ spec:
         #     port: 8080
         #  initialDelaySeconds: 10
         #  periodSeconds: 5
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - "[ -f /tmp/nginx.pid ] && ps -A | grep nginx"
-          initialDelaySeconds: 10
-          periodSeconds: 5
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #     - /bin/sh
+        #     - -c
+        #     - "[ -f /tmp/nginx.pid ] && ps -A | grep nginx"
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 5
         securityContext:
           runAsUser: {{.Values.nginx.runAsUser}}
           privileged: false
@@ -144,7 +141,7 @@ spec:
           - name: static-data
             mountPath: /var/www/html
           - name: matomo-supervisor-tracker
-            mountPath: /etc/supervisor.d
+            mountPath: /etc/supervisor/conf.d
             readOnly: true
           - name: matomo-phpfpm-tracker
             mountPath: /usr/local/etc/php-fpm.d/zz-global.conf
@@ -170,8 +167,10 @@ spec:
           initialDelaySeconds: {{ .Values.matomo.livenessProbe.initialDelaySeconds | default 5 }}
           periodSeconds:  {{ .Values.matomo.livenessProbe.periodSeconds | default 5 }}
         {{- end }}
+      {{- if .Values.matomo.imagePullSecrets }}
       imagePullSecrets:
-      - name: matomo-registry-secret
+        {{ toYaml .Values.matomo.imagePullSecrets }}
+      {{- end }}
       volumes:
       - name: nginx-conf
         configMap:

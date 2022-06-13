@@ -59,7 +59,6 @@ matomo:
         - Dashboard
         - ScheduledReports
         - PrivacyManager
-        - CustomVariables
         - IntranetMeasurable
         - Widgetize
         - MultiSites

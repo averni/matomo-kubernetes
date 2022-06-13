@@ -18,6 +18,7 @@ data:
           "CoreAdminHome",
           "UsersManager",
           "SitesManager",
+          "TagManager",
           "Installation",
           "Monolog",
           "Intl",
@@ -59,13 +60,13 @@ data:
           "Dashboard",
           "ScheduledReports",
           "PrivacyManager",
-          "CustomVariables",
           "IntranetMeasurable",
           "Widgetize",
           "MultiSites",
           "Ecommerce",
           "RssWidget",
           "Feedback",
+          "QueuedTracking",
           "TwoFactorAuth",
           "MobileMessaging",
           "Overlay",
@@ -77,8 +78,8 @@ data:
           "UserConsole"
         ],
         "Site": {
-          "name": "Localhost",
-          "url": "https://localhost"
+          "name": "example.com",
+          "url": "https://www.example.com"
         },
         "Config": {
           "log": {
@@ -86,7 +87,7 @@ data:
           },
           "General": {
             "show_update_notification_to_superusers_only": 1,
-            "noreply_email_address": "noreply@digitalistgroup.com",
+            "noreply_email_address": "matomo@example.com",
             "enable_framed_pages": 1,
             "enable_framed_settings": 1,
             "enable_trusted_host_check": 0,
