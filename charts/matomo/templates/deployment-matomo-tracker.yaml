@@ -171,6 +171,10 @@ spec:
       imagePullSecrets:
         {{ toYaml .Values.matomo.imagePullSecrets }}
       {{- end }}
+      {{- if .Values.matomo.tracker.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.matomo.tracker.nodeSelector }}
+      {{- end }}
       volumes:
       - name: nginx-conf
         configMap:

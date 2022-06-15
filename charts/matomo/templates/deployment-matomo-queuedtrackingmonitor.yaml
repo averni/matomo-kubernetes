@@ -85,6 +85,10 @@ spec:
       imagePullSecrets:
         {{ toYaml .Values.matomo.imagePullSecrets }}
       {{- end }}
+      {{- if .Values.matomo.queuedTrackingMonitor.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.matomo.queuedTrackingMonitor.nodeSelector }}
+      {{- end }}
       volumes:
       - name: matomo-configuration
         configMap:
