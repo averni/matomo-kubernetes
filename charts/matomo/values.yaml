@@ -3,12 +3,146 @@ namespace: matomo
 nginxWorkerProcesses: 5
 matomo:
   image: digitalist/matomo:4.10.1
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets:
+    - name: matomo-registry-secret
   runAsUser: 82
   installCommand: ./console plugin:activate ExtraTools && ./console matomo:install --install-file=/tmp/matomo/install.json --force --do-not-drop-db
   license:
     secretKeyRef:
       name: matomo-license
       key: matomo-license
+  # config: 
+  #   PluginsInstalled: 
+  #     - Diagnostics
+  #     - DBStats
+  #     - Login
+  #     - CoreAdminHome
+  #     - UsersManager
+  #     - SitesManager
+  #     - TagManager
+  #     - Installation
+  #     - Monolog
+  #     - Intl
+  #     - CorePluginsAdmin
+  #     - CoreHome
+  #     - WebsiteMeasurable
+  #     - CoreVisualizations
+  #     - Proxy
+  #     - API
+  #     - Transitions
+  #     - Actions
+  #     - Referrers
+  #     - UserLanguage
+  #     - DevicesDetection
+  #     - Goals
+  #     - SEO
+  #     - Events
+  #     - UserCountry
+  #     - GeoIp2
+  #     - VisitsSummary
+  #     - VisitFrequency
+  #     - VisitTime
+  #     - VisitorInterest
+  #     - CoreUpdater
+  #     - CoreConsole
+  #     - UserCountryMap
+  #     - Live
+  #     - ImageGraph
+  #     - Annotations
+  #     - Insights
+  #     - Morpheus
+  #     - Contents
+  #     - DevicePlugins
+  #     - UserId
+  #     - CustomJsTracker
+  #     - ExtraTools
+  #     - LanguagesManager
+  #     - SegmentEditor
+  #     - Dashboard
+  #     - ScheduledReports
+  #     - PrivacyManager
+  #     - IntranetMeasurable
+  #     - Widgetize
+  #     - MultiSites
+  #     - Ecommerce
+  #     - RssWidget
+  #     - Feedback
+  #     - QueuedTracking
+  #     - TwoFactorAuth
+  #     - MobileMessaging
+  #     - Overlay
+  #     - BulkTracking
+  #     - Resolution
+  #     - Heartbeat
+  #     - Marketplace
+  #     - ProfessionalServices
+  #     - UserConsole
+  #     - CustomSiteId
+  #   Config:
+  #     log:
+  #       log_level: "ERROR"
+  #     General:
+  #       show_update_notification_to_superusers_only: 1
+  #       noreply_email_address: "matomo@example.com"
+  #       enable_framed_pages: 1
+  #       enable_framed_settings: 1
+  #       enable_trusted_host_check: 0
+  #       enable_plugin_update_communication: 0
+  #       enable_auto_update: 0
+  #       enable_installer: 0
+  #       enable_internet_features: 0
+  #       enable_plugins_admin: 0
+  #       enable_plugin_upload: 0
+  #       enable_geolocation_admin: 1
+  #       proxy_client_headers[]": "HTTP_X_FORWARDED_FOR"
+  #       browser_archiving_disabled_enforce: 1
+  #       enable_browser_archiving_triggering: 0
+  #       archiving_range_force_on_browser_request: 0
+  #       enable_sql_optimize_queries: 0
+  #       enabled_periods_UI: "day,week,month,year,range"
+  #       enabled_periods_API: "day,week,month,year,range"
+  #       session_save_handler: "dbtable"
+  #       enable_marketplace: 0
+  #       enable_general_settings_admin: 0
+  #       piwik_pro_ads_enabled: 0
+  #       assume_secure_protocol: 1
+  #       "cors_domains[]": "*"
+  #       datatable_archiving_maximum_rows_referrers: 2000
+  #       datatable_archiving_maximum_rows_subtable_referrers: 2000
+  #       datatable_archiving_maximum_rows_actions: 2000
+  #       datatable_archiving_maximum_rows_subtable_actions: 2000
+  #       datatable_archiving_maximum_rows_events: 2000
+  #       datatable_archiving_maximum_rows_subtable_events: 2000
+  #       datatable_archiving_maximum_rows_custom_variables: 2000
+  #       datatable_archiving_maximum_rows_subtable_custom_variables: 2000
+  #       time_before_today_archive_considered_outdated: 2700
+  #       time_before_week_archive_considered_outdated: 10800
+  #       time_before_month_archive_considered_outdated: 32400
+  #       time_before_year_archive_considered_outdated: 64800
+  #       time_before_range_archive_considered_outdated: 10800
+  #     QueuedTracking:
+  #       useSentinelBackend: 0
+  #       # sentinelMasterName: "mymaster"
+  #       redisHost: "redis"
+  #       redisPort: "6379"
+  #       redisDatabase: "4"
+  #       redisPassword: "matomo"
+  #       queueEnabled: 1
+  #       numQueueWorkers: 1
+  #       numRequestsToProcess: "25"
+  #       processDuringTrackingRequest: 0
+  #     RedisCache:
+  #       host: "redis"
+  #       port: 6379
+  #       password: "matomo"
+  #       database: 0
+  #     ChainedCache:
+  #       backends[0]: array 
+  #       backends[1]: redis
+  #     Tracker:
+  #       visit_standard_length: 1
+
   ingress:
     enabled: true
     annotations:
@@ -26,6 +160,8 @@ matomo:
         memory: 32Mi
   cronJobs:
     coreArchive:
+      # nodeSelector:
+      #   lifecycle: Spot
       labels:
         name: matomo-jobs-corearchive
         instance: matomo-af
@@ -44,6 +180,8 @@ matomo:
           memory: 512Mi
           cpu: 700m
     scheduledTasks:
+      # nodeSelector:
+      #   lifecycle: Spot
       labels:
         name: matomo-jobs-scheduled-tasks
         instance: matomo-af
@@ -85,15 +223,54 @@ matomo:
       email: foo@example.com
   phpfpm:
     tracker: true
+  # php:
+  #   memory_limit: 256M
+  # fpmmetrics:
+  #   resources:
+  #     limits:
+  #       cpu: 40m
+  #       memory: 32Mi
+  #     requests:
+  #       cpu: 40m
+  #       memory: 32Mi
   queuedTrackingMonitor:
     enabled: true
+    # nodeSelector:
+    #   lifecycle: Spot
+    # resources:
+    #   requests:
+    #     memory: 32Mi
+    #     cpu: 10m
+    #   limits:
+    #     memory: 128Mi
+    #     cpu: 100m
   queuedTrackingProcess:
+    enabled: true
     replicas: 1
+    # nodeSelector:
+    #   lifecycle: Spot
+    # resources:
+    #   requests:
+    #     memory: 32Mi
+    #     cpu: 10m
+    #   limits:
+    #     memory: 256Mi
+    #     cpu: 200m
   tracker:
     replicas: 1
     hostname: localhost
     tls: false
     loadbalancer: false
+    # nodeSelector:
+    #   lifecycle: Spot
+    # resources:
+    #   requests:
+    #     memory: 32Mi
+    #     cpu: 10m
+    #   limits:
+    #     memory: 256Mi
+    #     cpu: 200m
+  
 tracker:
   phpfpm:
     type: ondemand
@@ -103,6 +280,14 @@ tracker:
 nginx:
   image: digitalist/nginx:1.21.6
   runAsUser: 100
+  # imagePullPolicy: IfNotPresent
+  # resources:
+  #   requests:
+  #     memory: 32Mi
+  #     cpu: 10m
+  #   limits:
+  #     memory: 128Mi
+  #     cpu: 200m
 db:
   hostname: matomo-db-mysql
   password:
