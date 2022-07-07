@@ -63,7 +63,7 @@ spec:
           containers:
           - name: matomo-jobs-scheduledtasks
             image: {{.Values.matomo.image}}
-            imagePullPolicy: Always
+            imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
             securityContext:
               runAsUser: {{.Values.matomo.runAsUser}}
               privileged: false

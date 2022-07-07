@@ -63,7 +63,7 @@ spec:
           containers:
           - name: matomo-jobs-corearchive
             image: {{.Values.matomo.image}}
-            imagePullPolicy: Always
+            imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
             resources:
               requests:
                 memory: {{ .Values.matomo.cronJobs.coreArchive.resources.requests.memory }}

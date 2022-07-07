@@ -26,7 +26,7 @@ spec:
           runAsUser: {{.Values.matomo.runAsUser}}
           privileged: false
           allowPrivilegeEscalation: false
-        imagePullPolicy: Always
+        imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
         env:
         - name: MATOMO_FIRST_USER_NAME
           value: {{.Values.matomo.dashboard.firstuser.username}}
@@ -67,7 +67,7 @@ spec:
           runAsUser: {{.Values.matomo.runAsUser}}
           privileged: false
           allowPrivilegeEscalation: false
-        imagePullPolicy: Always
+        imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
         env:
         - name: MATOMO_DB_PASSWORD
           valueFrom:
