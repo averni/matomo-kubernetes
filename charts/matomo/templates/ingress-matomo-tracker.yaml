@@ -1,4 +1,4 @@
-{{- if .Values.matomo.ingress.enabled }}
+{{- if and .Values.matomo.ingress.enabled (not .Values.matomo.tracker.loadbalancer) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -35,119 +35,65 @@ spec:
         pathType: Prefix
         backend:
           service:
-            {{- if .Values.matomo.tracker.loadbalancer }}
-            name: matomo-tracker-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-tracker
             port:
               number: 8080
-            {{- end }}
       - path: /piwik.js
         pathType: Prefix
         backend:
           service:
-            {{- if .Values.matomo.tracker.loadbalancer }}
-            name: matomo-tracker-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-tracker
             port:
               number: 8080
-            {{- end }}
       - path: /matomo.php
         pathType: Prefix
         backend:
           service:
-            {{- if .Values.matomo.tracker.loadbalancer }}
-            name: matomo-tracker-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-tracker
             port:
               number: 8080
-            {{- end }}
       - path: /matomo.js
         pathType: Prefix
         backend:
           service:
-            {{- if .Values.matomo.tracker.loadbalancer }}
-            name: matomo-tracker-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-tracker
             port:
               number: 8080
-            {{- end }}
       - path: /js/.*
         pathType: Prefix
         backend:
           service:
-            {{- if .Values.matomo.tracker.loadbalancer }}
-            name: matomo-tracker-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-tracker
             port:
               number: 8080
-            {{- end }}
       - path: /plugins/HeatmapSessionRecording/.*
         pathType: Prefix
         backend:
           service:
-            {{- if .Values.matomo.tracker.loadbalancer }}
-            name: matomo-tracker-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-tracker
             port:
               number: 8080
-            {{- end }}
       - path: /plugins/Overlay/client/.*
         pathType: Prefix
         backend:
           service:
-            {{- if .Values.matomo.tracker.loadbalancer }}
-            name: matomo-tracker-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-tracker
             port:
               number: 8080
-            {{- end }}
       - path: /node_modules/jquery/dist/.*
         pathType: Prefix
         backend:
           service:
-            {{- if .Values.matomo.tracker.loadbalancer }}
-            name: matomo-tracker-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-tracker
             port:
               number: 8080
-            {{- end }}
       - path: /plugins/UserFeedback/assets/.*
         pathType: Prefix
         backend:
           service:
-            {{- if .Values.matomo.tracker.loadbalancer }}
-            name: matomo-tracker-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-tracker
             port:
               number: 8080
-            {{- end }}
   {{- if .Values.matomo.tracker.tls }}
   tls:
   - hosts:

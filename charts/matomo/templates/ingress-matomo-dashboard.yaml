@@ -1,4 +1,4 @@
-{{- if .Values.matomo.ingress.enabled }}
+{{- if and .Values.matomo.ingress.enabled (not .Values.matomo.dashboard.loadbalancer) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -26,16 +26,9 @@ spec:
         pathType: ImplementationSpecific
         backend:
           service:
-            {{- if .Values.matomo.dashboard.loadbalancer }}
-            name: matomo-dashboard-lb
-            port:
-              number: 80
-              {{ else }}
             name: matomo-dashboard
             port:
               number: 8080
-            {{- end }}
-
   {{- if .Values.matomo.dashboard.tls }}
   tls:
   - hosts:
