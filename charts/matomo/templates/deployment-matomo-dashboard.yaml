@@ -30,7 +30,7 @@ spec:
         resources:
 {{ toYaml .Values.matomo.resources | indent 10 }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
         env:
         - name: MATOMO_FIRST_USER_NAME
           value: {{.Values.matomo.dashboard.firstuser.username}}
@@ -139,7 +139,7 @@ spec:
           containerPort: 8080
       - name: matomo
         image: {{.Values.matomo.image}}
-        imagePullPolicy: {{.Values.matomo.imagePullPolicy}}
+        imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
         {{- if .Values.matomo.resources }}
         resources:
 {{ toYaml .Values.matomo.resources | indent 10 }}
@@ -148,7 +148,6 @@ spec:
           runAsUser: {{.Values.matomo.runAsUser}}
           privileged: false
           allowPrivilegeEscalation: false
-        imagePullPolicy: Always
         env:
         - name: MATOMO_DB_PASSWORD
           valueFrom:
@@ -203,6 +202,10 @@ spec:
       {{- if .Values.matomo.imagePullSecrets }}
       imagePullSecrets:
         {{ toYaml .Values.matomo.imagePullSecrets }}
+      {{- end }}
+      {{- if .Values.matomo.dashboard.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.matomo.dashboard.nodeSelector }}
       {{- end }}
       volumes:
       - name: nginx-conf
@@ -268,4 +271,9 @@ spec:
       protocol: TCP
   selector:
     app: matomo-dashboard
+  {{- if .Values.matomo.dashboard.loadbalancer }}
+  type: LoadBalancer
+  {{- else if .Values.matomo.dashboard.nodeport -}}
+  type: NodePort
+  {{- end -}}
 {{- end -}}

@@ -26,7 +26,7 @@ spec:
           runAsUser: {{.Values.matomo.runAsUser}}
           privileged: false
           allowPrivilegeEscalation: false
-        imagePullPolicy: Always
+        imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
         env:
         - name: MATOMO_FIRST_USER_NAME
           value: {{.Values.matomo.dashboard.firstuser.username}}
@@ -121,6 +121,7 @@ spec:
         - containerPort: 8080
       - name: matomo
         image: {{.Values.matomo.image}}
+        imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
         {{- if .Values.matomo.tracker.resources }}
         resources:
 {{ toYaml .Values.matomo.tracker.resources | indent 10 }}
@@ -129,7 +130,6 @@ spec:
           runAsUser: {{.Values.matomo.runAsUser}}
           privileged: false
           allowPrivilegeEscalation: false
-        imagePullPolicy: Always
         env:
         - name: MATOMO_DB_PASSWORD
           valueFrom:
@@ -230,4 +230,9 @@ spec:
       protocol: TCP
   selector:
     app: matomo-tracker
+  {{- if .Values.matomo.tracker.loadbalancer }}
+  type: LoadBalancer
+  {{- else if .Values.matomo.tracker.nodeport -}}
+  type: NodePort
+  {{- end -}}
 {{- end -}}
