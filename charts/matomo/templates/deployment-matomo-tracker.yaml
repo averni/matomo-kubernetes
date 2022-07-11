@@ -234,5 +234,8 @@ spec:
   type: LoadBalancer
   {{- else if .Values.matomo.tracker.nodeport -}}
   type: NodePort
+  {{- if .Values.matomo.tracker.nodeportPort }}
+  nodePort: {{ .Values.matomo.tracker.nodeportPort }}
+  {{- end -}}
   {{- end -}}
 {{- end -}}

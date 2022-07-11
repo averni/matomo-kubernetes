@@ -11,7 +11,7 @@ data:
     command=php-fpm
     autostart=true
     autorestart=true
-    user=fpm-www-data
+    user=www-data
     redirect_stderr=true
     stdout_events_enabled=true
     stderr_events_enabled=true
@@ -22,7 +22,7 @@ data:
     command=sh -c 'while ( php /var/www/html/console custom-matomo-js:update && php /var/www/html/console tagmanager:regenerate-released-containers );do sleep 120; done'
     autostart=true
     autorestart=true
-    user=fpm-www-data
+    user=www-data
     redirect_stderr=true
     stdout_events_enabled=true
     stderr_events_enabled=true

@@ -11,7 +11,7 @@ data:
     command=sh -c 'while ( php /var/www/html/console queuedtracking:process );do sleep 5; done'
     autostart=true
     autorestart=true
-    # user=www-data
+    user=www-data
     numprocs={{ .Values.matomo.queuedTrackingProcess.numProcs | default 1 }}
     redirect_stderr=true
     stdout_events_enabled=true

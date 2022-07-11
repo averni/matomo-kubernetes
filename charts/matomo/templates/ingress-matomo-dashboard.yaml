@@ -1,4 +1,4 @@
-{{- if and .Values.matomo.ingress.enabled (not .Values.matomo.dashboard.loadbalancer) }}
+{{- if .Values.matomo.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
