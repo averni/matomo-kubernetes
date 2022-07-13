@@ -81,9 +81,11 @@ spec:
         volumeMounts:
           - name: static-data
             mountPath: /var/www/html
+          {{- if .Values.matomo.tracker.enabled }}
           - name: matomo-supervisor-tracker
             mountPath: /etc/supervisor/conf.d
             readOnly: true
+          {{- end }}
       {{- if .Values.matomo.imagePullSecrets }}
       imagePullSecrets:
         {{ toYaml .Values.matomo.imagePullSecrets }}
@@ -98,9 +100,11 @@ spec:
           name: matomo-configuration
       - name: static-data
         emptyDir: {}
+      {{- if .Values.matomo.tracker.enabled }}
       - name: matomo-supervisor-tracker
         configMap:
           name: matomo-supervisor-tracker
+      {{- end }}
 ---
 apiVersion: v1
 kind: Service

@@ -1,3 +1,4 @@
+{{- if .Values.matomo.tracker.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -26,3 +27,4 @@ data:
     redirect_stderr=true
     stdout_events_enabled=true
     stderr_events_enabled=true
+{{- end }}

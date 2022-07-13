@@ -1,4 +1,3 @@
----
 {{- if .Values.matomo.tracker.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -64,15 +63,19 @@ spec:
           allowPrivilegeEscalation: false
         image: hipages/php-fpm_exporter:2.2.0
         imagePullPolicy: IfNotPresent
+        {{- if  .Values.matomo.fpmmetrics }}
         {{- if .Values.matomo.fpmmetrics.resources }}
         resources:
 {{ toYaml .Values.matomo.fpmmetrics.resources | indent 10 }}
         {{- end }}
+        {{- end }}
       - name: nginx
         image: {{.Values.nginx.image}}
+        {{- if .Values.matomo.tracker.nginx }}
         {{- if .Values.matomo.tracker.nginx.resources }}
         resources:
 {{ toYaml .Values.matomo.tracker.nginx.resources | indent 10 }}
+        {{- end }}
         {{- end }}
         # readinessProbe:
         #   httpGet:
@@ -124,7 +127,7 @@ spec:
         imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
         {{- if .Values.matomo.tracker.resources }}
         resources:
-{{ toYaml .Values.matomo.tracker.resources | indent 10 }}
+          {{- toYaml .Values.matomo.tracker.resources | indent 10 }}
         {{- end }}
         securityContext:
           runAsUser: {{.Values.matomo.runAsUser}}

@@ -85,9 +85,11 @@ spec:
         env:
         - name: PHP_FPM_FIX_PROCESS_COUNT
           value: "true"
+        {{- if  .Values.matomo.fpmmetrics }}
         {{- if .Values.matomo.fpmmetrics.resources }}
         resources:
 {{ toYaml .Values.matomo.fpmmetrics.resources | indent 10 }}
+        {{- end }}
         {{- end }}
       - name: nginx
         image: {{.Values.nginx.image}}

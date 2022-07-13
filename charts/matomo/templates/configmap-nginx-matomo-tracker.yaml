@@ -1,3 +1,4 @@
+{{- if .Values.matomo.tracker.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -387,3 +388,4 @@ data:
     CheckRule "$TRAVERSAL >= 4" BLOCK;
     CheckRule "$EVADE >= 4" BLOCK;
     CheckRule "$XSS >= 8" BLOCK;
+{{- end }}

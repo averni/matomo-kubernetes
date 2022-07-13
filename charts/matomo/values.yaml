@@ -257,6 +257,7 @@ matomo:
     #     memory: 256Mi
     #     cpu: 200m
   tracker:
+    enabled: false
     replicas: 1
     hostname: localhost
     tls: false
