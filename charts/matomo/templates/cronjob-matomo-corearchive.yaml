@@ -19,28 +19,26 @@ spec:
           initContainers:
           - name: matomo-init
             image: {{.Values.matomo.image}}
-            imagePullPolicy: Always
+            imagePullPolicy: {{default "IfNotPresent" .Values.matomo.imagePullPolicy}}
             securityContext:
               runAsUser: {{.Values.matomo.runAsUser}}
               privileged: false
               allowPrivilegeEscalation: false
+            envFrom:
+            - configMapRef:
+              name: matomo-install-env
             env:
-            - name: MATOMO_FIRST_USER_NAME
-              value: {{.Values.matomo.dashboard.firstuser.username}}
-            - name: MATOMO_FIRST_USER_EMAIL
-              value: {{.Values.matomo.dashboard.firstuser.email}}
+            {{ $type := (printf "%T" .Values.matomo.dashboard.firstuser.password) }}
+            {{- if eq $type "string" -}}
             - name: MATOMO_FIRST_USER_PASSWORD
-              value: {{.Values.matomo.dashboard.firstuser.password}}
-            - name: MATOMO_DB_HOST
-              value: {{.Values.db.hostname}}
-            - name: MATOMO_DB_NAME
-              value: {{.Values.db.name}}
-            {{ if .Values.db.prefix }}
-            - name: MATOMO_DB_PREFIX
-              value: {{.Values.db.prefix}}
-            {{ end }}
-            - name: MATOMO_DB_USERNAME
-              value: {{.Values.db.username}}
+              value: {{ .Values.matomo.dashboard.firstuser.password }}
+            {{- else -}}
+            - name: MATOMO_FIRST_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.matomo.dashboard.firstuser.password.secretKeyRef.name }}
+                  key: {{ .Values.matomo.dashboard.firstuser.password.secretKeyRef.key }}
+            {{- end }}
             - name: MATOMO_DB_PASSWORD
               valueFrom:
                 secretKeyRef:

@@ -146,6 +146,7 @@ matomo:
   cli:
     enabled: true
   cronJobs:
+    enabled: true
     coreArchive:
       labels:
         name: matomo-jobs-corearchive
@@ -158,6 +159,7 @@ matomo:
       activeDeadlineSeconds: 43200
       command: ./console core:archive --disable-scheduled-tasks
     scheduledTasks:
+      enabled: true
       labels:
         name: matomo-jobs-scheduled-tasks
         instance: matomo-cj
@@ -176,7 +178,10 @@ matomo:
     tls: false
     firstuser:
       username: admin
-      password: admin123
+      password:
+        secretKeyRef:
+          name: matomo-firstuser
+          key: matomo-firstuser-password
       email: foo@example.com
   phpfpm:
     tracker: true

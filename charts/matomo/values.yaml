@@ -219,7 +219,10 @@ matomo:
     tls: false
     firstuser:
       username: admin
-      password: admin123
+      password: test
+        # secretKeyRef:
+        #   name: matomo-firstuser
+        #   key: matomo-firstuser-password
       email: foo@example.com
   phpfpm:
     tracker: true
